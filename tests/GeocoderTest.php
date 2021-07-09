@@ -28,17 +28,7 @@ use Nasumilu\Spatial\Geocoder\AbstractGeocoder;
  */
 class GeocoderTest extends TestCase
 {
-
-    /**
-     * @test
-     */
-    public function testGetUri()
-    {
-        $baseUri = 'https://localhost/geocode';
-        $geocoder = $this->getMockForAbstractClass(AbstractGeocoder::class, [$baseUri]);
-        $this->assertEquals($baseUri, $geocoder->getBaseUri());
-    }
-
+    
     public function testGetSetMethod()
     {
         $baseUri = 'https://localhost/geocode';

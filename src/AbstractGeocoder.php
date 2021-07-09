@@ -41,11 +41,6 @@ abstract class AbstractGeocoder implements Geocode
         $this->configureQueryString($this->queryOptionsResolver);
     }
     
-    public function getBaseUri(): string
-    {
-        return $this->baseUri;
-    }
-    
     public function getMethod(): string 
     {
         return $this->method;
