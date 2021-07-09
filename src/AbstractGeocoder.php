@@ -59,7 +59,7 @@ abstract class AbstractGeocoder implements Geocode
         $options = $this->queryOptionsResolver->resolve($address);
         $query = $this->queryOptionsResolver->resolve($address);
         
-        $response = $this->client->request($this->method, $this->baseUri, ['query' => $query]);
+        $response = $this->client->request($this->method, ['query' => $query]);
         return $response->toArray();
     }
     
