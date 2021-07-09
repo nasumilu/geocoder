@@ -29,7 +29,7 @@ use Symfony\Component\HttpClient\HttpClient;
 abstract class AbstractGeocoder implements Geocode
 {
     
-    private OptionsResolver $queryOptionsResolver;
+    private OptionsResolver $optionsResolver;
     private HttpClientInterface $client;
     private string $method;
     
@@ -37,8 +37,8 @@ abstract class AbstractGeocoder implements Geocode
     {
         $this->client = HttpClient::createForBaseUri($baseUri);
         $this->method = $method;
-        $this->queryOptionsResolver = new OptionsResolver();
-        $this->configureQueryString($this->queryOptionsResolver);
+        $this->optionsResolver = new OptionsResolver();
+        $this->configureOptions($this->optionsResolver);
     }
     
     public function getMethod(): string 
@@ -52,13 +52,23 @@ abstract class AbstractGeocoder implements Geocode
         return $this;
     }
     
-    protected abstract function configureQueryString(OptionsResolver $optionsResolver);
+    private function configureOptions(OptionsResolver $optionsResolver) {
+        $optionsResolver->setDefault('query', 
+                fn(OptionsResolver $resolver) => $this->configureQueryOptions($resolver))
+                ->setAllowedTypes('query', 'array');
+        $optionsResolver->setDefault('header', 
+                fn(OptionsResolver $resolver) => $this->configureHeaderOptions($resolver));
+    }
     
+    protected function configureQueryOptions(OptionsResolver $optionsResolver) { }
+    
+    protected function configureHeaderOptions(OptionsResolver $optionsReolver) { }
+
+
     public function geocode(array $address): array
     {
-        $options = $this->queryOptionsResolver->resolve($address);
-        $query = $this->queryOptionsResolver->resolve($address);
-        
+        $options = $this->optionsResolver->resolve($address);
+        $query = $this->optionsResolver->resolve($address);
         $response = $this->client->request($this->method, ['query' => $query]);
         return $response->toArray();
     }
