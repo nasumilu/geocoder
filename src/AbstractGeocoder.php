@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace Nasumilu\Spatial\Geocoder;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpClient\HttpClient;
 /**
  * Description of AbstractGeocoder
@@ -29,12 +30,12 @@ abstract class AbstractGeocoder implements Geocode
 {
     
     private OptionsResolver $queryOptionsResolver;
-    private string $baseUri;
+    private HttpClientInterface $client;
     private string $method;
     
     public function __construct(string $baseUri, string $method = 'GET')
     {
-        $this->baseUri = $baseUri;
+        $this->client = HttpClient::createForBaseUri($baseUri);
         $this->method = $method;
         $this->queryOptionsResolver = new OptionsResolver();
         $this->configureQueryString($this->queryOptionsResolver);
@@ -62,8 +63,6 @@ abstract class AbstractGeocoder implements Geocode
     {
         $options = $this->queryOptionsResolver->resolve($address);
         $query = $this->queryOptionsResolver->resolve($address);
-        // send request 
-        $client = new HttpClient();
         
         $response = $client->request($this->method, $this->baseUri, ['query' => $query]);
         return $response->toArray();
