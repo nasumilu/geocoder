@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=7.4",
         "nasumilu/geometry": "v1.0",
         "symfony/options-resolver": "v5.3.0",
         "symfony/http-client": "v5.3.3"
