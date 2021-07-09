@@ -52,7 +52,7 @@ abstract class AbstractGeocoder implements Geocode
         return $this;
     }
     
-    private function configureOptions(OptionsResolver $optionsResolver) {
+    protected function configureOptions(OptionsResolver $optionsResolver) {
         $optionsResolver->setDefault('query', 
                 fn(OptionsResolver $resolver) => $this->configureQueryOptions($resolver))
                 ->setAllowedTypes('query', 'array');
