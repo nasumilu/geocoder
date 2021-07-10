@@ -21,8 +21,9 @@ declare(strict_types=1);
 namespace Nasumilu\Spatial\Geocoder;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\HttpClient\HttpClient;
+
+use function array_filter;
+
 /**
  * Description of AbstractGeocoder
  */
@@ -30,47 +31,59 @@ abstract class AbstractGeocoder implements Geocode
 {
     
     private OptionsResolver $optionsResolver;
-    private HttpClientInterface $client;
-    private string $method;
     
-    public function __construct(string $baseUri, string $method = 'GET')
+    public function __construct()
     {
-        $this->client = HttpClient::createForBaseUri($baseUri);
-        $this->method = $method;
         $this->optionsResolver = new OptionsResolver();
         $this->configureOptions($this->optionsResolver);
     }
     
-    public function getMethod(): string 
-    {
-        return $this->method;
+    protected function configureOptions(OptionsResolver $optionsResolver): void {
+        // address options is required
+        $optionsResolver->setRequired(self::ADDRESS)
+                ->addAllowedTypes(self::ADDRESS, 'string');
+        // optional city value
+        $optionsResolver->setDefined(self::CITY)
+                ->setAllowedTypes(self::CITY, 'string');
+        // optional region
+        $optionsResolver->setDefined(self::REIGION)
+                ->setAllowedTypes(self::REIGION, 'string');
+        // optional postal code
+        $optionsResolver->setDefined(self::POSTAL_CODE)
+                ->setAllowedTypes(self::POSTAL_CODE, ['string', 'int']);
+        // optional country
+        $optionsResolver->setDefined(self::COUNTRY)
+                ->setAllowedTypes(self::COUNTRY, 'string');
     }
     
-    public function setMethod(string $method = 'GET'): self
-    {
-        $this->method = $method;
-        return $this;
-    }
-    
-    protected function configureOptions(OptionsResolver $optionsResolver) {
-        $optionsResolver->setDefault('query', 
-                fn(OptionsResolver $resolver) => $this->configureQueryOptions($resolver))
-                ->setAllowedTypes('query', 'array');
-        $optionsResolver->setDefault('header', 
-                fn(OptionsResolver $resolver) => $this->configureHeaderOptions($resolver));
-    }
-    
-    protected function configureQueryOptions(OptionsResolver $optionsResolver) { }
-    
-    protected function configureHeaderOptions(OptionsResolver $optionsReolver) { }
+    /**
+     * Must return an array of candidate locations based upon the provided 
+     * options. Data returned <strong>MUST</strong> adhere to following format:
+     * <ul>
+     *  <li>    
+     *      ['score'] - a numeric value where 0 is the lowest possible match and
+     *      100 is the highest possible match. The results may have duplicate
+     *      match values.
+     *  </li>   
+     *  <li>
+     *      ['location'] - an ordered pair (x,y) numerically index. This is 
+     *      (longitude, latitude), where a point's longitude is its <em>x</em> 
+     *      value and the latitude is its <em>y</em> value. The location 
+     *  `   <strong>MUST</strong> use the WGS84 (EPSG:4326) coordinate system.
+     *  </li>
+     * </ul>
+     */
+    protected abstract function findCandidates(array $options) : array;
 
-
-    public function geocode(array $address): array
+        
+    public function geocode(array $options, callable $filter = null): array
     {
-        $options = $this->optionsResolver->resolve($address);
-        $query = $this->optionsResolver->resolve($address);
-        $response = $this->client->request($this->method, ['query' => $query]);
-        return $response->toArray();
+        $candidates = $this->findCandidates($this->optionsResolver->resolve($options));
+        
+        if($filter) {
+            return array_filter($candidates, $filter);
+        }
+        return $candidates;
     }
     
 }

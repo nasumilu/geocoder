@@ -18,25 +18,33 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder\Tests;
+namespace Nasumilu\Spatia\Geocoder\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Nasumilu\Spatial\Geocoder\AbstractGeocoder;
+use Nasumilu\Spatial\Geocoder\Geocode;
+use Nasumilu\Spatial\Geocoder\EsriWorldGeocoder;
 
 /**
- * Description of GeocoderTest
+ * Description of EsriWorldGeocoderTest
  */
-class GeocoderTest extends TestCase
+class EsriWorldGeocoderTest extends TestCase
 {
     
-    public function testGetSetMethod()
+    private Geocode $geocoder;
+    
+    public function setUp(): void
     {
-        $baseUri = 'https://localhost/geocode';
-        $geocoder = $this->getMockForAbstractClass(AbstractGeocoder::class, [$baseUri]);
-        $method = 'POST';
-
-        $this->assertEquals('GET', $geocoder->getMethod());
-        $this->assertEquals($method, $geocoder->setMethod($method)->getMethod());
+        $this->geocoder = new EsriWorldGeocoder();
     }
-
+    
+    /**
+     * @test
+     * @testWith [{ "address":"19720 NW 262 AVE", "city": "High Springs" }]
+     * @param array $address
+     */
+    public function testGeocode(array $address) 
+    {
+        print_r($this->geocoder->geocode($address));
+    }
+    
 }
