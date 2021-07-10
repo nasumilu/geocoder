@@ -23,6 +23,12 @@ limitations under the License.
          convertWarningsToExceptions="true"
          stopOnFailure="false">
          
+    <php>
+        <env name="TAMU_API_KEY" value="demo"/>
+        <!-- Get your Here api token at https://developer.here.com -->
+        <env name="HERE_API_KEY" value=""/>
+    </php>
+    
     <testsuites>
         <testsuite name="unit">
             <directory>tests</directory>
@@ -43,3 +49,4 @@ limitations under the License.
         </include>
     </coverage>
 </phpunit>
+

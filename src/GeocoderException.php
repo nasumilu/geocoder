@@ -18,21 +18,19 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatia\Geocoder\Tests;
+namespace Nasumilu\Spatial\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\Geocoder;
-use Nasumilu\Spatial\Geocoder\TAMUGeocoder;
-
+use Exception;
+use Throwable;
 
 /**
- * Description of EsriWorldGeocoderTest
+ * Description of GeocoderException
  */
-class TAMUGeocoderTest extends AbstractGeocoderTest
-{
-
-        protected function initGeocoder(): Geocoder
+class GeocoderException extends Exception { 
+    
+    public function __construct(Throwable $previous = null)
     {
-        return new TAMUGeocoder($_ENV['TAMU_API_KEY']);
+        parent::__construct("Unable to geocode address!", E_ERROR, $previous);
     }
-
-}
+    
+} 

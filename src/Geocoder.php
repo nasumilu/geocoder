@@ -31,6 +31,9 @@ interface Geocoder
     /** Address option key */
     public const ADDRESS = 'address';
 
+    /** Neighborhood option key */
+    public const NEIGHBORHOOD = 'neighborhood';
+
     /** City option key */
     public const CITY = 'city';
 
@@ -42,7 +45,7 @@ interface Geocoder
 
     /** Country option key */
     public const COUNTRY = 'country';
-    
+
     /** GeometryFactory options key */
     public const FACTORY = 'factory';
 
@@ -61,29 +64,34 @@ interface Geocoder
      * <ul>
      *  <li>
      *      ['factory'] - the required GeometryFactory to construct build the 
-     *      locations as Point objects.
+     *          locations as Point objects.
      *  </li>
      *  <li>
      *      ['address'] - the required street address which may include the house number 
-     *      and street name. (e.g. 123 N Main Street)
+     *          and street name. (e.g. 123 N Main Street)
      *  </li>
      *  <li>
-     *      ['city'] - the smallest administrative area for which the address is 
-     *      located. (e.g. Buffalo)
+     *      ['neighborhood' - the smallest administrative are for which the address
+     *          is located. Mostly used with address outside fo the US and may 
+     *          not be supported by all gecoders.
+     *  </li>
+     *  <li>
+     *      ['city'] - the city or municipality for which the address is 
+     *          located. (e.g. Buffalo)
      *  </li>
      *  <li>
      *      ['region'] - the next largest administrative are for which the 
-     *      address is located. (e.g. New York)
+     *          address is located. (e.g. New York)
      *  </li>
      *  <li>
      *      ['postal_code'] - a standard postal code for the address. Typically,
-     *       3 - 6 alphanumeric characters. (e.g 14202) This value <strong>MUST 
-     *       NOT</strong> be an extended postal code.
+     *          3 - 6 alphanumeric characters. (e.g 14202) This value <strong>MUST 
+     *          NOT</strong> be an extended postal code.
      *  </li>
      *  <li>
      *      ['country'] - the country for which the address is located. 
-     *      Implementing classes must use the <strong>ISO 3166-1 alpha-3</strong>
-     *      value for this options. (e.g. USA)
+     *          Implementing classes must use the <strong>ISO 3166-1 alpha-3</strong>
+     *          value for this options. (e.g. USA)
      *  </li>
      * </ul>
      *  

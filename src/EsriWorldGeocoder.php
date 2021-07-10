@@ -20,14 +20,18 @@ declare(strict_types=1);
 
 namespace Nasumilu\Spatial\Geocoder;
 
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use function array_filter;
+use function array_map;
 
 /**
  * Description of EsriWorldGeocoder
  */
 class EsriWorldGeocoder extends HttpGetGeocoder
 {
-
+    
     public const BASE_URI = 'https://geocode.arcgis.com';
 
     public function __construct(int $maxRedirects = 20)
@@ -52,27 +56,30 @@ class EsriWorldGeocoder extends HttpGetGeocoder
     {
         return array_filter([
             'f' => 'json',
-            'address' => $options[self::ADDRESS],
-            'city' => $options[self::CITY] ?? null,
-            'region' => $options[self::REGION] ?? null,
+            self::ADDRESS => $options[self::ADDRESS],
+            self::NEIGHBORHOOD => $options[self::NEIGHBORHOOD] ?? null,
+            self::CITY => $options[self::CITY] ?? null,
+            self::REGION => $options[self::REGION] ?? null,
             'postal' => $options[self::POSTAL_CODE] ?? null,
             'countryCode' => $options[self::COUNTRY] ?? null,
             'outSR' => $options[self::FACTORY]->srid()
         ]);
     }
     
-    protected function findCandidates(array $options): array
+    protected function mapResponse(ResponseInterface $response): array
     {
-        $response = parent::findCandidates($options);
-        $candidates = [];
-        foreach($response['candidates'] as $candidate) {
-            $candidates[] = [
+        $data = $response->toArray();
+        if(0 == count($data['candidates'])) {
+            throw new NoCandidatesFoundException();
+        }
+        return array_map(function($candidate) {
+            return [
+                self::ADDRESS => $candidate[self::ADDRESS],
                 self::SCORE => $candidate[self::SCORE],
                 self::LOCATION => [(float) $candidate[self::LOCATION]['x'],
                     (float) $candidate[self::LOCATION]['y']]
             ];
-        }
-        return $candidates;
+        }, $data['candidates']);
     }
 
 }

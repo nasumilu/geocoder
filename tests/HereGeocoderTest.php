@@ -21,18 +21,20 @@ declare(strict_types=1);
 namespace Nasumilu\Spatia\Geocoder\Tests;
 
 use Nasumilu\Spatial\Geocoder\Geocoder;
-use Nasumilu\Spatial\Geocoder\TAMUGeocoder;
+use Nasumilu\Spatial\Geocoder\HereGeocoder;
 
 
 /**
  * Description of EsriWorldGeocoderTest
  */
-class TAMUGeocoderTest extends AbstractGeocoderTest
+class HereGeocoderTest extends AbstractGeocoderTest
 {
 
-        protected function initGeocoder(): Geocoder
+
+    protected function initGeocoder(): Geocoder
     {
-        return new TAMUGeocoder($_ENV['TAMU_API_KEY']);
+        return new HereGeocoder($_ENV['HERE_API_KEY']);
     }
+
 
 }

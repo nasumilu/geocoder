@@ -20,10 +20,13 @@ declare(strict_types=1);
 
 namespace Nasumilu\Spatial\Geocoder;
 
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Exception;
+use Symfony\Contracts\HttpClient\{
+    HttpClientInterface,
+    ResponseInterface
+};
 use function array_filter;
 use function array_merge;
 
@@ -37,7 +40,7 @@ abstract class HttpGetGeocoder extends AbstractGeocoder
     public const HEADERS = 'headers';
     public const AUTH = 'auth';
     public const QUERY = 'query';
-    
+
     private HttpClientInterface $client;
 
     public function __construct(string $baseUri, int $maxRedirects = 20)
@@ -74,10 +77,12 @@ abstract class HttpGetGeocoder extends AbstractGeocoder
      * will recognize. Basically, maps the Geocode interface's generic options
      * to an array options which is used to construct a query string.
      * 
-     * @param array $$options
+     * @param array $options
      * @return array 
      */
     protected abstract function query(array $options): array;
+
+    protected abstract function mapResponse(ResponseInterface $response): array;
 
     /**
      * Finds location candidates using an HttpClient.
@@ -88,11 +93,11 @@ abstract class HttpGetGeocoder extends AbstractGeocoder
     protected function findCandidates(array $options): array
     {
         $httpOptions = array_filter(array_merge([
-             self::QUERY => $this->query($options)],
-             $options[self::HEADERS] ?? [],
-             $options[self::AUTH] ?? []));
-        $response = $this->client->request('GET', $options['path'], $httpOptions);
-        return $response->toArray();
+            self::QUERY => $this->query($options)],
+                        $options[self::HEADERS] ?? [],
+                        $options[self::AUTH] ?? []));
+        return $this->mapResponse($this->client->request('GET',
+                                $options['path'], $httpOptions));
     }
 
 }

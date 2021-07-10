@@ -20,15 +20,18 @@ declare(strict_types=1);
 
 namespace Nasumilu\Spatial\Geocoder;
 
+use Symfony\Component\HttpClient\Exception\JsonException;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use function in_array;
 use function array_filter;
+use function array_merge;
 
 /**
  * TAMUGeocoder utilizes Texas A&M Geoservices to geocode address candidates. 
- * The service provide geocoding for US addresses <strong>ONLY</strong>. Specific,
- * options for this Geocoder are the following:
+ * The service provide geocoding for US addresses <strong>ONLY</strong> and does
+ * not support the <kbd>neighborhood</kbd> option. Specific, options for this 
+ * Geocoder are the following:
  * <ul>
  *  <li>
  *      census_year - possible values are 1990, 2000, 2010, or for all three use
@@ -48,6 +51,7 @@ use function array_filter;
  *          revertToHierarchy; when allow_ties is false)
  *  </li>
  * </ul>
+ *
  * <strong>IMPORTANT: </strong> The factory option's spatial reference system id 
  * (SRID) <strong>MUST</strong> be 4326. The service does not support other 
  * coordinate systems.
@@ -154,34 +158,40 @@ class TAMUGeocoder extends HttpGetGeocoder
      */
     protected function query(array $options): array
     {
-        return array_filter([
-            'apiKey' => $options[self::API_KEY],
+        return array_merge(array_filter([
             self::VERSION => self::API_VERSION,
-            'streetAddress' => $options[self::ADDRESS],
             'city' => $options[self::CITY] ?? null,
             'state' => $options[self::REGION] ?? null,
             'zip' => $options[self::POSTAL_CODE] ?? null,
             'allowTies' => $options[self::ALLOW_TIES] ? 'true' : 'false',
             'tieBreakingStrategy' => $options[self::ALLOW_TIES] ? null : $options[self::TIE_BREAKING_STRATEGY],
-            'censusYear' => $options[self::CENSUS_YEAR],
-            'format' => 'json'
-        ]);
+            'censusYear' => $options[self::CENSUS_YEAR]]), [
+            'streetAddress' => $options[self::ADDRESS],
+            'apiKey' => $options[self::API_KEY],
+            'format' => 'json']);
     }
 
-    protected function findCandidates(array $options): array
+    protected function mapResponse(ResponseInterface $response): array
     {
-        $response = parent::findCandidates($options);
-        $candidates = [];
-        if ($response['FeatureMatchingResultCount'] > 0) {
-            foreach ($response['OutputGeocodes'] as $candidate) {
-                $candidates[] = [
+        try {
+            $candidates = $response->toArray();
+            if ($candidates['FeatureMatchingResultCount'] == 0) {
+                throw new NoCandidatesFoundException();
+            }
+
+            $value = [];
+            foreach ($candidates['OutputGeocodes'] as $candidate) {
+                $value[] = [
+                    self::ADDRESS => $candidates['InputAddress']['StreetAddress'],
                     self::SCORE => $candidate['OutputGeocode']['MatchScore'],
-                    self::LOCATION => [ (float) $candidate['OutputGeocode']['Longitude'],
+                    self::LOCATION => [(float) $candidate['OutputGeocode']['Longitude'],
                         (float) $candidate['OutputGeocode']['Latitude']]
                 ];
             }
+            return $value;
+        } catch (JsonException $jex) {
+            throw new NoCandidatesFoundException($jex);
         }
-        return $candidates;
     }
 
 }

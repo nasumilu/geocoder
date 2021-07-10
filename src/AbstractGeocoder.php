@@ -47,6 +47,9 @@ abstract class AbstractGeocoder implements Geocoder
         // address options is required
         $optionsResolver->setRequired(self::ADDRESS)
                 ->addAllowedTypes(self::ADDRESS, 'string');
+        // optional neighborhood value
+        $optionsResolver->setDefined(self::NEIGHBORHOOD)
+                ->setAllowedTypes(self::NEIGHBORHOOD, 'string');
         // optional city value
         $optionsResolver->setDefined(self::CITY)
                 ->setAllowedTypes(self::CITY, 'string');

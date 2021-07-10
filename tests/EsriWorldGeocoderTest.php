@@ -20,38 +20,21 @@ declare(strict_types=1);
 
 namespace Nasumilu\Spatia\Geocoder\Tests;
 
-use PHPUnit\Framework\TestCase;
 use Nasumilu\Spatial\Geocoder\Geocoder;
 use Nasumilu\Spatial\Geocoder\EsriWorldGeocoder;
-use Nasumilu\Spatial\Geometry\{
-    GeometryFactory,
-    AbstractGeometryFactory
-};
+
 
 /**
  * Description of EsriWorldGeocoderTest
  */
-class EsriWorldGeocoderTest extends TestCase
+class EsriWorldGeocoderTest extends AbstractGeocoderTest
 {
 
-    private Geocoder $geocoder;
-    private GeometryFactory $factory;
 
-    public function setUp(): void
+    protected function initGeocoder(): Geocoder
     {
-        $this->geocoder = new EsriWorldGeocoder();
-        $this->factory = $this->getMockForAbstractClass(AbstractGeometryFactory::class, [['srid' => 4326]]);
+        return new EsriWorldGeocoder();
     }
 
-    /**
-     * @test
-     * @testWith [{ "address":"19720 NW 262 AVE", "city": "High Springs" }]
-     * @param array $address
-     */
-    public function testGeocode(array $address)
-    {
-        $options = array_merge($address, ['factory' => $this->factory]);
-        print_r($this->geocoder->geocode($options));
-    }
 
 }

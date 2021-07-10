@@ -18,21 +18,18 @@ declare(strict_types=1);
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatia\Geocoder\Tests;
+namespace Nasumilu\Spatial\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\Geocoder;
-use Nasumilu\Spatial\Geocoder\TAMUGeocoder;
-
+use Exception;
+use Throwable;
 
 /**
- * Description of EsriWorldGeocoderTest
+ * Description of CandidateNotFoundException
  */
-class TAMUGeocoderTest extends AbstractGeocoderTest
+class NoCandidatesFoundException extends Exception
 {
-
-        protected function initGeocoder(): Geocoder
+    public function __construct(Throwable $parent = null)
     {
-        return new TAMUGeocoder($_ENV['TAMU_API_KEY']);
+        parent::__construct('No candidate locations found!', E_ERROR, $parent);
     }
-
 }
