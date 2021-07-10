@@ -22,8 +22,6 @@ namespace Nasumilu\Spatial\Geocoder;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-use function array_values;
-
 /**
  * Description of EsriWorldGeocoder
  */
@@ -56,9 +54,10 @@ class EsriWorldGeocoder extends HttpGetGeocoder
             'f' => 'json',
             'address' => $options[self::ADDRESS],
             'city' => $options[self::CITY] ?? null,
-            'region' => $options[self::REIGION] ?? null,
+            'region' => $options[self::REGION] ?? null,
             'postal' => $options[self::POSTAL_CODE] ?? null,
-            'countryCode' => $options[self::COUNTRY] ?? null
+            'countryCode' => $options[self::COUNTRY] ?? null,
+            'outSR' => $options[self::FACTORY]->srid()
         ]);
     }
     
@@ -69,7 +68,8 @@ class EsriWorldGeocoder extends HttpGetGeocoder
         foreach($response['candidates'] as $candidate) {
             $candidates[] = [
                 self::SCORE => $candidate[self::SCORE],
-                self::LOCATION => array_values($candidate[self::LOCATION])
+                self::LOCATION => [(float) $candidate[self::LOCATION]['x'],
+                    (float) $candidate[self::LOCATION]['y']]
             ];
         }
         return $candidates;

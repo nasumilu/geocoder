@@ -21,31 +21,38 @@ declare(strict_types=1);
 namespace Nasumilu\Spatia\Geocoder\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Nasumilu\Spatial\Geocoder\Geocode;
+use Nasumilu\Spatial\Geocoder\Geocoder;
 use Nasumilu\Spatial\Geocoder\TAMUGeocoder;
+use Nasumilu\Spatial\Geometry\{
+    GeometryFactory,
+    AbstractGeometryFactory
+};
 
 /**
  * Description of EsriWorldGeocoderTest
  */
 class TAMUGeocoderTest extends TestCase
 {
-    
-    private Geocode $geocoder;
-    
+
+    private Geocoder $geocoder;
+    private GeometryFactory $factory;
+
     public function setUp(): void
     {
         $this->geocoder = new TAMUGeocoder('demo');
+        $this->factory = $this->getMockForAbstractClass(AbstractGeometryFactory::class, [['srid' => 4326]]);
     }
-    
+
     /**
      * @test
      * @testWith [{ "address": "19720 NW 262 AVE", "city": "High Springs", "region": "FL", "postal_code":"32643" }]
      *           [{ "address": "123 Main Street", "city": "Los Angeles", "region": "CA", "postal_code": 90007 }]
      * @param array $address
      */
-    public function testGeocode(array $address) 
+    public function testGeocode(array $address)
     {
-        print_r($this->geocoder->geocode($address));
+        $options = array_merge($address, ['factory' => $this->factory]);
+        print_r($this->geocoder->geocode($options));
     }
-    
+
 }

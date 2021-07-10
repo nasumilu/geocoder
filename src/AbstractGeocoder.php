@@ -21,24 +21,29 @@ declare(strict_types=1);
 namespace Nasumilu\Spatial\Geocoder;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Nasumilu\Spatial\Geometry\GeometryFactory;
 
 use function array_filter;
 
 /**
  * Description of AbstractGeocoder
  */
-abstract class AbstractGeocoder implements Geocode
+abstract class AbstractGeocoder implements Geocoder
 {
-    
+
     private OptionsResolver $optionsResolver;
-    
+
     public function __construct()
     {
         $this->optionsResolver = new OptionsResolver();
         $this->configureOptions($this->optionsResolver);
     }
-    
-    protected function configureOptions(OptionsResolver $optionsResolver): void {
+
+    protected function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        // factory option is required
+        $optionsResolver->setRequired(self::FACTORY)
+                ->setAllowedTypes(self::FACTORY, GeometryFactory::class);
         // address options is required
         $optionsResolver->setRequired(self::ADDRESS)
                 ->addAllowedTypes(self::ADDRESS, 'string');
@@ -46,8 +51,8 @@ abstract class AbstractGeocoder implements Geocode
         $optionsResolver->setDefined(self::CITY)
                 ->setAllowedTypes(self::CITY, 'string');
         // optional region
-        $optionsResolver->setDefined(self::REIGION)
-                ->setAllowedTypes(self::REIGION, 'string');
+        $optionsResolver->setDefined(self::REGION)
+                ->setAllowedTypes(self::REGION, 'string');
         // optional postal code
         $optionsResolver->setDefined(self::POSTAL_CODE)
                 ->setAllowedTypes(self::POSTAL_CODE, ['string', 'int']);
@@ -55,7 +60,7 @@ abstract class AbstractGeocoder implements Geocode
         $optionsResolver->setDefined(self::COUNTRY)
                 ->setAllowedTypes(self::COUNTRY, 'string');
     }
-    
+
     /**
      * Must return an array of candidate locations based upon the provided 
      * options. Data returned <strong>MUST</strong> adhere to following format:
@@ -66,24 +71,25 @@ abstract class AbstractGeocoder implements Geocode
      *      match values.
      *  </li>   
      *  <li>
-     *      ['location'] - an ordered pair (x,y) numerically index. This is 
-     *      (longitude, latitude), where a point's longitude is its <em>x</em> 
-     *      value and the latitude is its <em>y</em> value. The location 
-     *  `   <strong>MUST</strong> use the WGS84 (EPSG:4326) coordinate system.
+     *      ['location'] - an ordered pair (x,y) of coordinates.
      *  </li>
      * </ul>
      */
-    protected abstract function findCandidates(array $options) : array;
+    protected abstract function findCandidates(array $options): array;
 
-        
     public function geocode(array $options, callable $filter = null): array
     {
         $candidates = $this->findCandidates($this->optionsResolver->resolve($options));
-        
-        if($filter) {
+        foreach ($candidates as &$candidate) {
+            $candidate[self::LOCATION] = $options[self::FACTORY]
+                    ->createPoint($candidate[self::LOCATION]);
+        }
+
+        if ($filter) {
             return array_filter($candidates, $filter);
         }
+        
         return $candidates;
     }
-    
+
 }

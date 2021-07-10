@@ -20,25 +20,51 @@ declare(strict_types=1);
 
 namespace Nasumilu\Spatial\Geocoder;
 
-interface Geocode
+/**
+ * Geocode interface defines a standard set of options which is used by all 
+ * implementations. 
+ */
+interface Geocoder
 {
+    // input options keys
 
+    /** Address option key */
     public const ADDRESS = 'address';
+
+    /** City option key */
     public const CITY = 'city';
-    public const REIGION = 'region';
+
+    /** Region option key */
+    public const REGION = 'region';
+
+    /** Postal code option key */
     public const POSTAL_CODE = 'postal_code';
+
+    /** Country option key */
     public const COUNTRY = 'country';
     
+    /** GeometryFactory options key */
+    public const FACTORY = 'factory';
+
+    // output options keys
+
+    /** Location candidate score key */
     public const SCORE = 'score';
+
+    /** Location candidate key */
     public const LOCATION = 'location';
-    
+
     /**
      * The basic options which each implementation <strong>MUST</strong> adhere 
      * to are:
      * 
      * <ul>
      *  <li>
-     *      ['address'] - the street address which may include the house number 
+     *      ['factory'] - the required GeometryFactory to construct build the 
+     *      locations as Point objects.
+     *  </li>
+     *  <li>
+     *      ['address'] - the required street address which may include the house number 
      *      and street name. (e.g. 123 N Main Street)
      *  </li>
      *  <li>
@@ -65,5 +91,4 @@ interface Geocode
      * @return array
      */
     public function geocode(array $options): array;
-        
 }

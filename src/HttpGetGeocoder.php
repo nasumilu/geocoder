@@ -25,6 +25,7 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function array_filter;
+use function array_merge;
 
 /**
  * Description of HttpGeocoder
@@ -33,6 +34,9 @@ abstract class HttpGetGeocoder extends AbstractGeocoder
 {
 
     public const PATH = 'path';
+    public const HEADERS = 'headers';
+    public const AUTH = 'auth';
+    public const QUERY = 'query';
     
     private HttpClientInterface $client;
 
@@ -58,44 +62,35 @@ abstract class HttpGetGeocoder extends AbstractGeocoder
     {
         parent::configureOptions($optionsResolver);
         $optionsResolver->setDefault(self::PATH, '')
-                ->setAllowedTypes(self::PATH, 'string');
+                ->setAllowedTypes(self::PATH, 'string')
+                ->setDefined(self::HEADERS)
+                ->setAllowedTypes(self::HEADERS, 'array')
+                ->setDefined(self::AUTH)
+                ->setAllowedTypes(self::AUTH, 'array');
     }
 
     /**
-     * Builds a query string from the configured options which this service 
-     * will recognize. 
+     * Builds a query string from the configured options the HTTP service 
+     * will recognize. Basically, maps the Geocode interface's generic options
+     * to an array options which is used to construct a query string.
+     * 
+     * @param array $$options
+     * @return array 
      */
     protected abstract function query(array $options): array;
 
     /**
-     * Builds the http request headers
-     * @link https://symfony.com/doc/current/http_client.html#headers
+     * Finds location candidates using an HttpClient.
+     * 
+     * @param array $options
      * @return array
      */
-    protected function headers(): array
-    {
-        return [
-            'User-Agent' => 'nasumilu/geocoder'
-        ];
-    }
-
-    /**
-     * Builds the http authentication needed for the request
-     * @link https://symfony.com/doc/current/http_client.html#authentication
-     * @return array
-     */
-    protected function authentication(): array
-    {
-        return [];
-    }
-
     protected function findCandidates(array $options): array
     {
-        $httpOptions = array_filter([
-            'query' => $this->query($options),
-            'headers' => $this->headers(),
-            $this->authentication()
-        ]);
+        $httpOptions = array_filter(array_merge([
+             self::QUERY => $this->query($options)],
+             $options[self::HEADERS] ?? [],
+             $options[self::AUTH] ?? []));
         $response = $this->client->request('GET', $options['path'], $httpOptions);
         return $response->toArray();
     }
