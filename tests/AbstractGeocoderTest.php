@@ -32,6 +32,10 @@ use Nasumilu\Spatial\Geometry\{
     Point
 };
 
+use function get_class;
+use function count;
+use function array_merge;
+
 /**
  * Description of AbstractGeocoderTest
  */
@@ -56,19 +60,28 @@ abstract class AbstractGeocoderTest extends TestCase
 
     /**
      * @test
-     * @testWith [{ "address":"1375 E Buena Vista Dr", "city": "Orlando", "region": "FL" }]
+     * @testWith [{ "address":"1375 E Buena Vista Dr", "city": "Orlando", "region": "FL", "country": "USA" }]
      *           [{ "address": "Av. Victoria 110", "neighborhood":"Centro", "city": "Nazas", "region": "Durango", "country": "Mexico" }]
+     *           [{ "address": "3403 8a St SW", "city": "Calgary", "region": "Alberta", "country": "Canada", "postal_code": "T2T 3B3"}]
      * @param array $address
      */
     public function testGeocodeSuccessful(array $address)
     {
         $options = array_merge($address, ['factory' => $this->factory]);
         $addresses = $this->geocoder->geocode($options);
+        $count = count($addresses);
+        $this->assertTrue($count > 0);
+        printf("Found %d candidates with %s!\n\n", $count, get_class($this->geocoder));
         $this->assertIsArray($addresses);
         foreach ($addresses as $value) {
+            $this->assertArrayHasKey('address', $value);
             $this->assertArrayHasKey('score', $value);
             $this->assertArrayHasKey('location', $value);
             $this->assertInstanceOf(Point::class, $value['location']);
+            printf("%s found %s scoring %d at location (%f,%f)\n", 
+                    get_class($this->geocoder), $value['address'], 
+                    $value['score'], $value['location']['x'], 
+                    $value['location']['y']);
         }
     }
 

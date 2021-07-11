@@ -55,7 +55,6 @@ class GoogleGeocoder extends HttpGetGeocoder
     {
         try {
             $data = $response->toArray();
-
             if ('ZERO_RESULTS' == $data['status']) {
                 throw new NoCandidatesFoundException();
             }
@@ -65,7 +64,7 @@ class GoogleGeocoder extends HttpGetGeocoder
 
             $candidates = [];
             foreach ($data['results'] as $candidate) {
-                $canidates[] = [
+                $candidates[] = [
                     self::ADDRESS => $candidate['formatted_address'],
                     self::SCORE => constant(GoogleGeocoder::class . "::{$candidate['geometry']['location_type']}"),
                     self::LOCATION => [
