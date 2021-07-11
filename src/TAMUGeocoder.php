@@ -190,7 +190,7 @@ class TAMUGeocoder extends HttpGetGeocoder
             }
             return $value;
         } catch (JsonException $jex) {
-            throw new NoCandidatesFoundException($jex);
+            throw new GeocoderException($jex);
         }
     }
 

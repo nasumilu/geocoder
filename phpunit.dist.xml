@@ -24,9 +24,12 @@ limitations under the License.
          stopOnFailure="false">
          
     <php>
+        <!-- Get you TAMU API key at https://geoservices.tamu.edu/Services/Geocode/WebService/-->
         <env name="TAMU_API_KEY" value="demo"/>
-        <!-- Get your Here api token at https://developer.here.com -->
+        <!-- Get your Here api key at https://developer.here.com -->
         <env name="HERE_API_KEY" value=""/>
+        <!-- Get your Google API key at https://developers.google.com/maps -->
+        <env name="GOOGLE_API_KEY" value=""/>
     </php>
     
     <testsuites>

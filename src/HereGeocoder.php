@@ -24,18 +24,23 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use function array_filter;
+use function rtrim;
+use function floatval;
+
 /**
  * Description of HereGeocoder
  */
 class HereGeocoder extends HttpGetGeocoder
 {
 
-    private $apiKey;
+    public const BASE_URI = 'https://geocode.search.hereapi.com';
+    private string $apiKey;
 
     public function __construct(string $apiKey, int $maxRedirects = 20)
     {
         $this->apiKey = $apiKey;
-        parent::__construct('https://geocode.search.hereapi.com', $maxRedirects);
+        parent::__construct(self::BASE_URI, $maxRedirects);
     }
 
     protected function configureOptions(OptionsResolver $optionsResolver): void
@@ -52,7 +57,13 @@ class HereGeocoder extends HttpGetGeocoder
     {
         try {
             $data = $response->toArray();
+            
+            if(0 == count($data['items'])) {
+                throw new NoCandidatesFoundException();
+            }
+            
             $candidates = [];
+            
             foreach ($data['items'] as $candidate) {
                 $candidates[] = [
                     self::ADDRESS => $candidate['title'],
@@ -64,19 +75,20 @@ class HereGeocoder extends HttpGetGeocoder
                 ];
             }
         } catch (ClientException $ex) {
-            throw new NoCandidatesFoundException($ex);
+            throw new GeocoderException($ex);
         }
         return $candidates;
     }
 
     protected function query(array $options): array
     {
-        $q = $options[self::ADDRESS];
-        $q .= (isset($options[self::CITY])) ? ' ' . $options[self::CITY] : '';
-
-        $q .= (isset($options[self::REGION])) ? ' ' . $options[self::REGION] : '';
-        $q .= (isset($options[self::COUNTRY])) ? ' ' . $options[self::COUNTRY] : '';
-        return ['q' => $q, 'apikey' => $options['api_key']];
+        $qq = '';
+        $qq .= (isset($options[self::CITY])) ? "city={$options[self::CITY]};" : '';
+        $qq .= (isset($options[self::NEIGHBORHOOD])) ? "district={$options[self::NEIGHBORHOOD]};" : '';
+        $qq .= (isset($options[self::REGION])) ? "state={$options[self::REGION]};" : '';
+        $qq .= (isset($options[self::COUNTRY])) ? "country={$options[self::COUNTRY]};" : '';
+        $qq = rtrim($qq, ';');
+        return array_filter(['q' => $options[self::ADDRESS], 'qq' => $qq, 'apikey' => $options['api_key']]);
     }
 
 }

@@ -23,7 +23,8 @@ namespace Nasumilu\Spatia\Geocoder\Tests;
 use PHPUnit\Framework\TestCase;
 use Nasumilu\Spatial\Geocoder\{
     Geocoder,
-    NoCandidatesFoundException
+    NoCandidatesFoundException,
+    GeocoderException
 };
 use Nasumilu\Spatial\Geometry\{
     GeometryFactory,
@@ -56,6 +57,7 @@ abstract class AbstractGeocoderTest extends TestCase
     /**
      * @test
      * @testWith [{ "address":"1375 E Buena Vista Dr", "city": "Orlando", "region": "FL" }]
+     *           [{ "address": "Av. Victoria 110", "neighborhood":"Centro", "city": "Nazas", "region": "Durango", "country": "Mexico" }]
      * @param array $address
      */
     public function testGeocodeSuccessful(array $address)
@@ -68,8 +70,6 @@ abstract class AbstractGeocoderTest extends TestCase
             $this->assertArrayHasKey('location', $value);
             $this->assertInstanceOf(Point::class, $value['location']);
         }
-        
-        print_r($addresses[0]);
     }
 
     /**
@@ -80,7 +80,7 @@ abstract class AbstractGeocoderTest extends TestCase
     public function testGeocodeFail(array $address)
     {
         $options = array_merge($address, ['factory' => $this->factory]);
-        $this->expectException(NoCandidatesFoundException::class);
+        $this->expectException(GeocoderException::class);
         $addresses = $this->geocoder->geocode($options);
     }
 
