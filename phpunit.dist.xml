@@ -32,6 +32,8 @@ limitations under the License.
         <env name="GOOGLE_API_KEY" value=""/>
         <!-- Get your TomTom API key at https://developer.tomtom.com -->
         <env name="TOMTOM_API_KEY" value=""/>
+        >!-- Get your Mapbox API key at https://account.mapbox.com/ -->
+        <env name="MAPBOX_API_KEY" value=""/>
     </php>
     
     <testsuites>
