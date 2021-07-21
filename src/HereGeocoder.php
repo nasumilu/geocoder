@@ -50,7 +50,7 @@ class HereGeocoder extends HttpGetGeocoder
         parent::configureOptions($optionsResolver);
         $optionsResolver->setDefault(self::PATH, 'v1/geocode')
                 ->setDefault('api_key', $this->apiKey)
-                ->setAllowedValues(self::FACTORY, fn($factory) => $factory->srid() === 4326);
+                ->setAllowedValues(self::FACTORY, fn($factory) => $factory->getSrid() === 4326);
     }
 
     protected function mapResponse(ResponseInterface $response): array

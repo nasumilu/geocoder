@@ -62,7 +62,7 @@ class EsriWorldGeocoder extends HttpGetGeocoder
             self::REGION => $options[self::REGION] ?? null,
             'postal' => $options[self::POSTAL_CODE] ?? null,
             'countryCode' => $options[self::COUNTRY] ?? null,
-            'outSR' => $options[self::FACTORY]->srid()
+            'outSR' => $options[self::FACTORY]->getSrid()
         ]);
     }
     

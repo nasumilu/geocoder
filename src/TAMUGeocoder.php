@@ -150,7 +150,7 @@ class TAMUGeocoder extends HttpGetGeocoder
                 ->setAllowedTypes(self::TIE_BREAKING_STRATEGY, 'string')
                 ->setAllowedValues(self::TIE_BREAKING_STRATEGY,
                         fn($value) => in_array($value, [self::FLIP_A_COIN, self::REVERT_TO_HIERARCHY]))
-                ->setAllowedValues(self::FACTORY, fn($factory) => $factory->srid() === 4326);
+                ->setAllowedValues(self::FACTORY, fn($factory) => $factory->getSrid() === 4326);
     }
 
     /**

@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": ">=7.4",
-        "nasumilu/geometry": "v1.0",
+        "nasumilu/geometry": "dev-main",
         "symfony/options-resolver": "v5.3.0",
         "symfony/http-client": "v5.3.3"
     },
@@ -26,5 +26,8 @@
         "psr-4": {
             "Nasumilu\\Spatial\\Geocoder\\Tests\\": "tests/"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable" : true
+    
 }

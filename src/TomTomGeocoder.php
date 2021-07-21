@@ -91,7 +91,7 @@ class TomTomGeocoder extends HttpGetGeocoder
                     return str_replace('{path}', $path, $value, $count);
                 })
                 ->setDefault('api_key', $this->apiKey)
-                ->setAllowedValues(self::FACTORY, fn($factory) => $factory->srid() === 4326);
+                ->setAllowedValues(self::FACTORY, fn($factory) => $factory->getSrid() === 4326);
     }
 
     protected function query(array $options): array
