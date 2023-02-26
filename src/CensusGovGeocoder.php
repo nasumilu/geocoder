@@ -22,7 +22,7 @@ namespace Nasumilu\Spatial\Geocoder;
  *
  * @link https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html Geocoding Services Web Application Programming Interface (API)
  */
-class CensusGovGeocoder extends AbstractGeocoder
+class CensusGovGeocoder extends AbstractGeocoderInterface
 {
     /**
      * The service endpoint

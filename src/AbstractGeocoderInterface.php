@@ -26,9 +26,9 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
- * Represents a {@see Geocoder} service where the {@see AddressCandidate} are obtained using a service endpoint.
+ * Represents a {@see GeocoderInterface} service where the {@see AddressCandidate} are obtained using a service endpoint.
  */
-abstract class AbstractGeocoder implements Geocoder
+abstract class AbstractGeocoderInterface implements GeocoderInterface
 {
 
     /**
@@ -70,11 +70,7 @@ abstract class AbstractGeocoder implements Geocoder
             $response = $this->client->request('GET', '', [
                 'query' => $query
             ]);
-            $candidates = $response->toArray();
-            if (0 === count($candidates)) {
-                throw new NoCandidatesFoundException();
-            }
-            return $this->mapCandidates($candidates);
+            return $this->mapCandidates($candidates = $response->toArray());
         } catch(TransportExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface | DecodingExceptionInterface | ClientExceptionInterface $ex) {
             throw new GeocoderException($ex);
         }

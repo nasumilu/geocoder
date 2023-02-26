@@ -22,7 +22,7 @@ namespace Nasumilu\Spatial\Geocoder;
  *
  * @link https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm Esri Geocoding
  */
-class EsriWorldGeocoder extends AbstractGeocoder
+class EsriWorldGeocoder extends AbstractGeocoderInterface
 {
 
     /**

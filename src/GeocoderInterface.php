@@ -20,7 +20,7 @@ namespace Nasumilu\Spatial\Geocoder;
 /**
  * The base interface for all gecoder(s).
  */
-interface Geocoder
+interface GeocoderInterface
 {
 
     /**
@@ -29,7 +29,6 @@ interface Geocoder
      * @param string $address The address to geocode
      * @return AddressCandidate[]  an array of possible address candidates
      * @throws GeocoderException when an unexpected issue occurs while geocoding the address
-     * @throws NoCandidatesFoundException when not address candidates are found for the address.
      */
     public function geocode(string $address): array;
 
