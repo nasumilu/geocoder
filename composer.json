@@ -11,12 +11,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Nasumilu\\Spatial\\Geocoder\\": "src/"
+      "Nasumilu\\Spatial\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Nasumilu\\Spatial\\Geocoder\\Tests\\": "tests/"
+      "Nasumilu\\Spatial\\Tests\\": "tests/"
     }
   }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Nasumilu\Spatial\Geocoder\Tests\ReverseGeocoder;
+namespace Nasumilu\Spatial\Tests\ReverseGeocoder;
 
-use Nasumilu\Spatial\Geocoder\ReverseGeocoder\EsriWorld;
+use Nasumilu\Spatial\ReverseGeocoder\EsriWorld;
 use PHPUnit\Framework\TestCase;
 
 class EsriWorldTest extends TestCase

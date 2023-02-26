@@ -1,6 +1,6 @@
 <?php
 
-namespace Nasumilu\Spatial\Geocoder;
+namespace Nasumilu\Spatial;
 
 use RuntimeException;
 use Throwable;

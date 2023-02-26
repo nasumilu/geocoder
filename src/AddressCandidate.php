@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder;
+namespace Nasumilu\Spatial;
 
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;

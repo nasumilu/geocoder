@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder\Geocoder;
+namespace Nasumilu\Spatial\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\AddressCandidate;
-use Nasumilu\Spatial\Geocoder\GeocoderException;
-use Nasumilu\Spatial\Geocoder\GeocoderInterface;
+use Nasumilu\Spatial\AddressCandidate;
+use Nasumilu\Spatial\GeocoderException;
+use Nasumilu\Spatial\GeocoderInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;

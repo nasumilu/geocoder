@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Nasumilu\Spatial\Geocoder\Tests\Geocoder;
+namespace Nasumilu\Spatial\Tests\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\Geocoder\CensusGov;
+use Nasumilu\Spatial\Geocoder\CensusGov;
 use PHPUnit\Framework\TestCase;
 
 class CensusGovTest extends TestCase

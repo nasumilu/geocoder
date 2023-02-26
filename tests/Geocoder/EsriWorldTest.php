@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Nasumilu\Spatial\Geocoder\Tests\Geocoder;
+namespace Nasumilu\Spatial\Tests\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\Geocoder\EsriWorld;
+use Nasumilu\Spatial\Geocoder\EsriWorld;
 use PHPUnit\Framework\TestCase;
 
 class EsriWorldTest extends TestCase

@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder\Geocoder;
+namespace Nasumilu\Spatial\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\AddressCandidate;
+use Nasumilu\Spatial\AddressCandidate;
 
 /**
  * Geocoder service provided by Esri

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder;
+namespace Nasumilu\Spatial;
 
 /**
  * The base interface for all gecoder(s).
