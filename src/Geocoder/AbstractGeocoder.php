@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder;
+namespace Nasumilu\Spatial\Geocoder\Geocoder;
 
+use Nasumilu\Spatial\Geocoder\AddressCandidate;
+use Nasumilu\Spatial\Geocoder\GeocoderException;
+use Nasumilu\Spatial\Geocoder\GeocoderInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -28,7 +31,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 /**
  * Represents a {@see GeocoderInterface} service where the {@see AddressCandidate} are obtained using a service endpoint.
  */
-abstract class AbstractGeocoderInterface implements GeocoderInterface
+abstract class AbstractGeocoder implements GeocoderInterface
 {
 
     /**
@@ -70,9 +73,9 @@ abstract class AbstractGeocoderInterface implements GeocoderInterface
             $response = $this->client->request('GET', '', [
                 'query' => $query
             ]);
-            return $this->mapCandidates($candidates = $response->toArray());
+            return $this->mapCandidates($response->toArray());
         } catch(TransportExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface | DecodingExceptionInterface | ClientExceptionInterface $ex) {
-            throw new GeocoderException($ex);
+            throw new GeocoderException(previous: $ex);
         }
     }
 }

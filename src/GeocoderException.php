@@ -11,9 +11,9 @@ use Throwable;
 class GeocoderException extends RuntimeException
 {
 
-    public function __construct(?Throwable $previous = null)
+    public function __construct(?string $message = null, ?Throwable $previous = null)
     {
-        parent::__construct('Unable to geocode address!', E_ERROR, $previous);
+        parent::__construct($message ?? 'Unable to geocode address!', E_ERROR, $previous);
     }
 
 }

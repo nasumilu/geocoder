@@ -14,22 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Nasumilu\Spatial\Geocoder\Tests;
+namespace Nasumilu\Spatial\Geocoder\Tests\Geocoder;
 
-use Nasumilu\Spatial\Geocoder\EsriWorldGeocoder;
+use Nasumilu\Spatial\Geocoder\Geocoder\CensusGov;
 use PHPUnit\Framework\TestCase;
 
-class EsriWorldGeocoderTest extends TestCase
+class CensusGovTest extends TestCase
 {
 
     public function testGeocoder(): void {
-        $expected = '4600 Silver Hill Rd, Suitland, Maryland, 20746';
-        $gecoder = new EsriWorldGeocoder();
-
+        $expected = '4600 Silver Hill Rd, Washington, DC, 20233';
+        $gecoder = new CensusGov();
         $candidates = $gecoder->geocode($expected);
         $this->assertIsArray($candidates);
-        $this->assertCount(3, $candidates);
-        $this->assertEquals($expected, $candidates[1]->getAddress());
+        $this->assertCount(1, $candidates);
+        $this->assertEquals(strtoupper($expected), $candidates[0]->getAddress());
     }
 
 }

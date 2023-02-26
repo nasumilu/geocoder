@@ -18,8 +18,7 @@
 namespace Nasumilu\Spatial\Geocoder;
 
 use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Internal\TentativeType;
-use \JsonSerializable;
+use JsonSerializable;
 
 /**
  * A basic DTO which represents an address candidate.

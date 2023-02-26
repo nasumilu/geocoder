@@ -15,19 +15,22 @@
  * limitations under the License.
  */
 
-namespace Nasumilu\Spatial\Geocoder;
+namespace Nasumilu\Spatial\Geocoder\Geocoder;
+
+use Nasumilu\Spatial\Geocoder\AddressCandidate;
 
 /**
- * Geocoding service provided by the US Census Bureau
+ * Geocoder service provided by Esri
  *
- * @link https://geocoding.geo.census.gov/geocoder/Geocoding_Services_API.html Geocoding Services Web Application Programming Interface (API)
+ * @link https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm Esri Geocoding
  */
-class CensusGovGeocoder extends AbstractGeocoderInterface
+class EsriWorld extends AbstractGeocoder
 {
+
     /**
      * The service endpoint
      */
-    private const BASE_URI = 'https://geocoding.geo.census.gov/geocoder/locations/onelineaddress';
+    private const BASE_URI = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates';
 
     public function __construct()
     {
@@ -40,8 +43,9 @@ class CensusGovGeocoder extends AbstractGeocoderInterface
     protected function mapCandidates(array $candidates): array
     {
         return array_map(
-            fn(array $value): AddressCandidate => new AddressCandidate($value['matchedAddress'], [$value['coordinates']['x'], $value['coordinates']['y']], null),
-            $candidates['result']['addressMatches']);
+            fn(array $value): AddressCandidate => new AddressCandidate($value['address'], [$value['location']['x'], $value['location']['y']], $value['score']),
+            $candidates['candidates']
+        );
     }
 
     /**
@@ -50,9 +54,8 @@ class CensusGovGeocoder extends AbstractGeocoderInterface
     protected function query(string $address): array
     {
         return [
-            'format' => 'json',
-            'benchmark' => '2020',
-            'address' => $address,
+            'f' => 'json',
+            'SingleLine' => $address
         ];
     }
 }
