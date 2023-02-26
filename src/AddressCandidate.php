@@ -62,16 +62,19 @@ class AddressCandidate implements JsonSerializable
      * @internal
      * @return array
      */
-    #[ArrayShape(['type' => "string", 'coordinates' => "array", 'properties' => "array"])]
+    #[ArrayShape(['type' => "string", 'geometry' => "array", 'properties' => "array"])]
     public function jsonSerialize(): array
     {
         return [
-            'type' => 'Point',
-            'coordinates' => $this->location,
-            'properties' => [
+            'type' => 'Feature',
+            'geometry' => [
+                'type' => 'Point',
+                'coordinates' => $this->location,
+            ],
+            'properties' => array_filter([
                 'address' => $this->address,
                 'score' => $this->score
-            ]
+            ])
         ];
     }
 }
