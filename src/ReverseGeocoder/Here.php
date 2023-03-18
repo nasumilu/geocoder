@@ -16,26 +16,30 @@
  */
 namespace Nasumilu\Spatial\ReverseGeocoder;
 
-class EsriWorld extends AbstractReverseGeocoder
-{
-    private const BASE_URI = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode';
+use Symfony\Component\Translation\LocaleSwitcher;
 
-    public function __construct()
+class Here extends AbstractReverseGeocoder
+{
+
+    private const BASE_URI = 'https://revgeocode.search.hereapi.com/v1/revgeocode';
+
+    public function __construct(private readonly string $apiKey, private readonly LocaleSwitcher $localeSwitcher)
     {
         parent::__construct(self::BASE_URI);
     }
 
     protected function mapCandidates(array $candidates): string|null
     {
-        return $candidates['address']['Match_addr'] ?? null;
+        return $candidates['items'][0]['address']['label'] ?? null;
     }
 
     protected function query(float|int|string $x, float|int|string $y): array
     {
         return [
-            'location' => "$x,$y",
-            'featureTypes' => 'StreetAddress',
-            'f' => 'json'
+            'at' => "$y,$x",
+            'lang' => $this->localeSwitcher->getLocale(),
+            'apiKey' => $this->apiKey
         ];
     }
+
 }
