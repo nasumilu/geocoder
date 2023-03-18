@@ -43,7 +43,11 @@ class EsriWorld extends AbstractGeocoder
     protected function mapCandidates(array $candidates): array
     {
         return array_map(
-            fn(array $value): AddressCandidate => new AddressCandidate($value['address'], [$value['location']['x'], $value['location']['y']], $value['score']),
+            fn(array $value): AddressCandidate => new AddressCandidate(
+                $value['address'],
+                [floatval($value['location']['x']), floatval($value['location']['y'])],
+                $value['score']
+            ),
             $candidates['candidates']
         );
     }

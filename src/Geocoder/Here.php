@@ -33,7 +33,7 @@ class Here extends AbstractGeocoder
         return array_map(
             fn(array $value): AddressCandidate => new AddressCandidate(
                 $value['address']['label'],
-                [$value['position']['lat'], $value['position']['lng']],
+                [floatval($value['position']['lat']), floatval($value['position']['lng'])],
                 $value['scoring']['queryScore'] * 100
             ),
             $candidates['items']

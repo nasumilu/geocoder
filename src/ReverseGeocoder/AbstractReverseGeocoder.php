@@ -86,7 +86,7 @@ abstract class AbstractReverseGeocoder implements ReverseGeocoderInterface
                 'query' => $query
             ]);
             if (null !== $address = $this->mapCandidates($response->toArray())) {
-                $address = new AddressCandidate($address, [$x, $y], null);
+                $address = new AddressCandidate($address, [floatval($x), floatval($y)], null);
             }
             return $address;
         } catch(TransportExceptionInterface | ServerExceptionInterface | RedirectionExceptionInterface | DecodingExceptionInterface | ClientExceptionInterface $ex) {

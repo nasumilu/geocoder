@@ -42,7 +42,11 @@ class CensusGov extends AbstractGeocoder
     protected function mapCandidates(array $candidates): array
     {
         return array_map(
-            fn(array $value): AddressCandidate => new AddressCandidate($value['matchedAddress'], [$value['coordinates']['x'], $value['coordinates']['y']], null),
+            fn(array $value): AddressCandidate => new AddressCandidate(
+                $value['matchedAddress'],
+                [floatval($value['coordinates']['x']), floatval($value['coordinates']['y'])],
+                null
+            ),
             $candidates['result']['addressMatches']);
     }
 
